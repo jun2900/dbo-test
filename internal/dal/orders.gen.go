@@ -27,10 +27,10 @@ func newOrder(db *gorm.DB, opts ...gen.DOOption) order {
 
 	tableName := _order.orderDo.TableName()
 	_order.ALL = field.NewAsterisk(tableName)
-	_order.ID = field.NewString(tableName, "id")
+	_order.ID = field.NewInt32(tableName, "id")
 	_order.OrderDate = field.NewTime(tableName, "orderDate")
 	_order.Amount = field.NewFloat64(tableName, "amount")
-	_order.CustomerID = field.NewString(tableName, "customerId")
+	_order.CustomerID = field.NewInt32(tableName, "customerId")
 
 	_order.fillFieldMap()
 
@@ -41,10 +41,10 @@ type order struct {
 	orderDo
 
 	ALL        field.Asterisk
-	ID         field.String
+	ID         field.Int32
 	OrderDate  field.Time
 	Amount     field.Float64
-	CustomerID field.String
+	CustomerID field.Int32
 
 	fieldMap map[string]field.Expr
 }
@@ -61,10 +61,10 @@ func (o order) As(alias string) *order {
 
 func (o *order) updateTableName(table string) *order {
 	o.ALL = field.NewAsterisk(table)
-	o.ID = field.NewString(table, "id")
+	o.ID = field.NewInt32(table, "id")
 	o.OrderDate = field.NewTime(table, "orderDate")
 	o.Amount = field.NewFloat64(table, "amount")
-	o.CustomerID = field.NewString(table, "customerId")
+	o.CustomerID = field.NewInt32(table, "customerId")
 
 	o.fillFieldMap()
 

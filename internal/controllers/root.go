@@ -23,6 +23,18 @@ type successResponse struct {
 	Data   any    `json:"data"`
 }
 
+type orderBy struct {
+	Field string
+	Desc  bool
+}
+
+type PagedResults struct {
+	Page         int64       `json:"page"`
+	PageSize     int64       `json:"page_size"`
+	Data         interface{} `json:"data"`
+	TotalRecords int         `json:"total_records"`
+}
+
 func generateJWT(email string) (string, error) {
 	expire, err := strconv.Atoi(os.Getenv("JWT_EXPIRE"))
 	if err != nil {

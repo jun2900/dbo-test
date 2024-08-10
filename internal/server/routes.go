@@ -2,7 +2,9 @@ package server
 
 import (
 	"dbo-test/internal/controllers"
+	"dbo-test/internal/middlewares"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,6 +18,16 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	//auth routes
 	r.POST("/login", controllers.LoginHandler)
+
+	r.Use(middlewares.JWTAuthMiddleware(os.Getenv("JWT_SECRET")))
+
+	//customer routes
+	customerGroup := r.Group("/customer")
+	customerGroup.POST("/", controllers.CreateCustomer)
+	customerGroup.GET("/", controllers.GetMultipleCustomer)
+	customerGroup.GET("/:id", controllers.GetSingleCustomer)
+	customerGroup.PUT("/:id", controllers.UpdateCustomer)
+	customerGroup.DELETE("/:id", controllers.DeleteCustomer)
 
 	return r
 }

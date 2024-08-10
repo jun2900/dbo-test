@@ -12,10 +12,10 @@ const TableNameOrder = "orders"
 
 // Order mapped from table <orders>
 type Order struct {
-	ID         string    `gorm:"column:id;primaryKey" json:"id"`
+	ID         int32     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
 	OrderDate  time.Time `gorm:"column:orderDate;not null" json:"orderDate"`
 	Amount     float64   `gorm:"column:amount;not null" json:"amount"`
-	CustomerID string    `gorm:"column:customerId;not null" json:"customerId"`
+	CustomerID int32     `gorm:"column:customerId;not null" json:"customerId"`
 }
 
 // TableName Order's table name

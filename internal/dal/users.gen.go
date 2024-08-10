@@ -27,7 +27,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 
 	tableName := _user.userDo.TableName()
 	_user.ALL = field.NewAsterisk(tableName)
-	_user.ID = field.NewString(tableName, "id")
+	_user.ID = field.NewInt32(tableName, "id")
 	_user.Email = field.NewString(tableName, "email")
 	_user.Password = field.NewString(tableName, "password")
 
@@ -40,7 +40,7 @@ type user struct {
 	userDo
 
 	ALL      field.Asterisk
-	ID       field.String
+	ID       field.Int32
 	Email    field.String
 	Password field.String
 
@@ -59,7 +59,7 @@ func (u user) As(alias string) *user {
 
 func (u *user) updateTableName(table string) *user {
 	u.ALL = field.NewAsterisk(table)
-	u.ID = field.NewString(table, "id")
+	u.ID = field.NewInt32(table, "id")
 	u.Email = field.NewString(table, "email")
 	u.Password = field.NewString(table, "password")
 

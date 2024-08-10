@@ -27,7 +27,7 @@ func newCustomer(db *gorm.DB, opts ...gen.DOOption) customer {
 
 	tableName := _customer.customerDo.TableName()
 	_customer.ALL = field.NewAsterisk(tableName)
-	_customer.ID = field.NewString(tableName, "id")
+	_customer.ID = field.NewInt32(tableName, "id")
 	_customer.Name = field.NewString(tableName, "name")
 	_customer.Email = field.NewString(tableName, "email")
 	_customer.Phone = field.NewString(tableName, "phone")
@@ -41,7 +41,7 @@ type customer struct {
 	customerDo
 
 	ALL   field.Asterisk
-	ID    field.String
+	ID    field.Int32
 	Name  field.String
 	Email field.String
 	Phone field.String
@@ -61,7 +61,7 @@ func (c customer) As(alias string) *customer {
 
 func (c *customer) updateTableName(table string) *customer {
 	c.ALL = field.NewAsterisk(table)
-	c.ID = field.NewString(table, "id")
+	c.ID = field.NewInt32(table, "id")
 	c.Name = field.NewString(table, "name")
 	c.Email = field.NewString(table, "email")
 	c.Phone = field.NewString(table, "phone")

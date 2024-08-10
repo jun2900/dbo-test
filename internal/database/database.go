@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"dbo-test/internal/dal"
 	"fmt"
 	"log"
 	"os"
@@ -11,6 +12,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/joho/godotenv/autoload"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // Service represents a service that interacts with a database.
@@ -29,12 +32,12 @@ type service struct {
 }
 
 var (
-	dbname     = os.Getenv("DB_DATABASE")
-	password   = os.Getenv("DB_PASSWORD")
-	username   = os.Getenv("DB_USERNAME")
-	port       = os.Getenv("DB_PORT")
-	host       = os.Getenv("DB_HOST")
-	dbInstance *service
+	dbname       = os.Getenv("DB_DATABASE")
+	port         = os.Getenv("DB_PORT")
+	host         = os.Getenv("DB_HOST")
+	root         = os.Getenv("DB_ROOT")
+	rootPassword = os.Getenv("DB_ROOT_PASSWORD")
+	dbInstance   *service
 )
 
 func New() Service {
@@ -44,18 +47,27 @@ func New() Service {
 	}
 
 	// Opening a driver typically will not attempt to connect to the database.
-	db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", username, password, host, port, dbname))
+	databaseURL := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=True&loc=Local", root, rootPassword, host, port, dbname)
+
+	db, err := gorm.Open(mysql.Open(databaseURL))
 	if err != nil {
 		// This will not be a connection error, but a DSN parse error or
 		// another initialization error.
 		log.Fatal(err)
 	}
-	db.SetConnMaxLifetime(0)
-	db.SetMaxIdleConns(50)
-	db.SetMaxOpenConns(50)
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	sqlDB.SetConnMaxLifetime(0)
+	sqlDB.SetMaxIdleConns(50)
+	sqlDB.SetMaxOpenConns(50)
+
+	dal.SetDefault(db)
 
 	dbInstance = &service{
-		db: db,
+		db: sqlDB,
 	}
 	return dbInstance
 }
