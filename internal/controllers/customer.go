@@ -13,6 +13,21 @@ import (
 	"gorm.io/gorm"
 )
 
+// GetSingleCustomer godoc
+//
+//	@Summary		Get a single customer
+//	@Description	Get details of a specific customer by ID
+//	@Tags			customers
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"Customer ID"
+//	@Security		Bearer
+//	@Success		200	{object}	model.Customer
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		404	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/customer/{id} [get]
 func GetSingleCustomer(c *gin.Context) {
 	customerID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -37,6 +52,25 @@ func GetSingleCustomer(c *gin.Context) {
 	c.JSON(http.StatusOK, customer)
 }
 
+// GetMultipleCustomer godoc
+//
+//	@Summary		Get multiple customers
+//	@Description	Get a list of customers with pagination and filtering options
+//	@Tags			customers
+//	@Accept			json
+//	@Produce		json
+//	@Param			page		query	int		false	"Page number"					default(1)
+//	@Param			pagesize	query	int		false	"Number of items per page"		default(10)
+//	@Param			order		query	string	false	"Order by field (asc or desc)"	default("asc")
+//	@Param			name		query	string	false	"Filter by name"
+//	@Param			email		query	string	false	"Filter by email"
+//	@Param			phone		query	string	false	"Filter by phone"
+//	@Security		Bearer
+//	@Success		200	{object}	successResponse{data=PagedResults{data=[]model.Customer}}
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/customer [get]
 func GetMultipleCustomer(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
@@ -141,6 +175,20 @@ type createCustomerReq struct {
 	Phone string `json:"phone"`
 }
 
+// CreateCustomer godoc
+//
+//	@Summary		Create a new customer
+//	@Description	Create a new customer with the provided details
+//	@Tags			customers
+//	@Accept			json
+//	@Produce		json
+//	@Param			customer	body	createCustomerReq	true	"Customer details"
+//	@Security		Bearer
+//	@Success		200	{object}	successResponse
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/customer [post]
 func CreateCustomer(c *gin.Context) {
 	var input createCustomerReq
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -174,6 +222,21 @@ type updateCustomerReq struct {
 	Phone string `json:"phone"`
 }
 
+// UpdateCustomer godoc
+//
+//	@Summary		Update an existing customer
+//	@Description	Update the details of an existing customer
+//	@Tags			customers
+//	@Accept			json
+//	@Produce		json
+//	@Param			id			path	int					true	"Customer ID"
+//	@Param			customer	body	updateCustomerReq	true	"Updated customer details"
+//	@Security		Bearer
+//	@Success		200	{object}	successResponse
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/customer/{id} [put]
 func UpdateCustomer(c *gin.Context) {
 	customerID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -211,6 +274,20 @@ func UpdateCustomer(c *gin.Context) {
 	})
 }
 
+// DeleteCustomer godoc
+//
+//	@Summary		Delete a customer
+//	@Description	Delete a customer by ID
+//	@Tags			customers
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"Customer ID"
+//	@Security		Bearer
+//	@Success		200	{object}	successResponse
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/customer/{id} [delete]
 func DeleteCustomer(c *gin.Context) {
 	customerID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -220,7 +297,14 @@ func DeleteCustomer(c *gin.Context) {
 		})
 		return
 	}
-	_, err = dal.Customer.Where(dal.Customer.ID.Eq(int32(customerID))).Delete()
+
+	info, err := dal.Customer.Where(dal.Customer.ID.Eq(int32(customerID))).Delete()
+	if info.RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, errorResponse{
+			Status:  errorStatus,
+			Message: "order not found",
+		})
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, errorResponse{
 			Status:  errorStatus,

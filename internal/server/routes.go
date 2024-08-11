@@ -7,13 +7,16 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 
-	r.GET("/", s.HelloWorldHandler)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
+	r.GET("/", s.HelloWorldHandler)
 	r.GET("/health", s.healthHandler)
 
 	//auth routes
@@ -28,6 +31,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 	customerGroup.GET("/:id", controllers.GetSingleCustomer)
 	customerGroup.PUT("/:id", controllers.UpdateCustomer)
 	customerGroup.DELETE("/:id", controllers.DeleteCustomer)
+
+	orderGroup := r.Group("/order")
+	orderGroup.POST("/", controllers.CreateOrder)
+	orderGroup.GET("/", controllers.GetMultipleOrder)
+	orderGroup.GET("/:id", controllers.GetSingleOrder)
+	orderGroup.PUT("/:id", controllers.UpdateOrder)
+	orderGroup.DELETE("/:id", controllers.DeleteOrder)
 
 	return r
 }

@@ -11,6 +11,7 @@ import (
 const (
 	successStatus = "success"
 	errorStatus   = "error"
+	layoutTime    = "2006-01-02"
 )
 
 type errorResponse struct {

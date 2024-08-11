@@ -14,6 +14,15 @@ type loginReq struct {
 	Password string `json:"password"`
 }
 
+// @Summary		Logs in a user
+// @Description	Logs in a user with email and password
+// @Tags			Auth
+// @Accept			json
+// @Produce		json
+// @Param			input	body		loginReq	true	"login req"
+// @Success		200		{object}	successResponse
+// @Failure		400		{object}	errorResponse
+// @Router			/login [post]
 func LoginHandler(c *gin.Context) {
 	var input loginReq
 	if err := c.ShouldBindJSON(&input); err != nil {

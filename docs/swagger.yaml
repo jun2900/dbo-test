@@ -1,0 +1,566 @@
+definitions:
+  controllers.PagedResults:
+    properties:
+      data: {}
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_records:
+        type: integer
+    type: object
+  controllers.createCustomerReq:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  controllers.createOrderReq:
+    properties:
+      amount:
+        type: number
+      customer_id:
+        type: integer
+      order_date:
+        format: date-time
+        type: string
+    type: object
+  controllers.errorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  controllers.loginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  controllers.successResponse:
+    properties:
+      data: {}
+      status:
+        type: string
+    type: object
+  controllers.updateCustomerReq:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  controllers.updateOrderReq:
+    properties:
+      amount:
+        type: number
+      customer_id:
+        type: integer
+      order_date:
+        format: date-time
+        type: string
+    type: object
+  model.Customer:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  model.Order:
+    properties:
+      amount:
+        type: number
+      customerId:
+        type: integer
+      id:
+        type: integer
+      orderDate:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: DBO-TEST API
+  version: "1.0"
+paths:
+  /customer:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of customers with pagination and filtering options
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: pagesize
+        type: integer
+      - default: '"asc"'
+        description: Order by field (asc or desc)
+        in: query
+        name: order
+        type: string
+      - description: Filter by name
+        in: query
+        name: name
+        type: string
+      - description: Filter by email
+        in: query
+        name: email
+        type: string
+      - description: Filter by phone
+        in: query
+        name: phone
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.successResponse'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/controllers.PagedResults'
+                  - properties:
+                      data:
+                        items:
+                          $ref: '#/definitions/model.Customer'
+                        type: array
+                    type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Get multiple customers
+      tags:
+      - customers
+    post:
+      consumes:
+      - application/json
+      description: Create a new customer with the provided details
+      parameters:
+      - description: Customer details
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.createCustomerReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Create a new customer
+      tags:
+      - customers
+  /customer/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a customer by ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Delete a customer
+      tags:
+      - customers
+    get:
+      consumes:
+      - application/json
+      description: Get details of a specific customer by ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Get a single customer
+      tags:
+      - customers
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated customer details
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.updateCustomerReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Update an existing customer
+      tags:
+      - customers
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user with email and password
+      parameters:
+      - description: login req
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.loginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      summary: Logs in a user
+      tags:
+      - Auth
+  /order:
+    get:
+      consumes:
+      - application/json
+      description: get multiple order with pagination and filtering options
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Number of items per page
+        in: query
+        name: pagesize
+        type: integer
+      - default: '"asc"'
+        description: Order by field (asc or desc)
+        in: query
+        name: order
+        type: string
+      - description: Filter by order date from
+        format: date
+        in: query
+        name: dateFrom
+        type: string
+      - description: Filter by order date to
+        format: date
+        in: query
+        name: dateTo
+        type: string
+      - default: 0
+        description: Filter by order amount from
+        in: query
+        name: amountFrom
+        type: number
+      - default: 0
+        description: Filter by order amount to
+        in: query
+        name: amountTo
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/controllers.PagedResults'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Order'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Get Multiple Order
+      tags:
+      - Order
+    post:
+      consumes:
+      - application/json
+      description: Create a new order with the provided details
+      parameters:
+      - description: Order details
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.createOrderReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Create a new order
+      tags:
+      - Order
+  /order/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Delete an order
+      tags:
+      - Order
+    get:
+      consumes:
+      - application/json
+      description: get single order by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Get Single Order
+      tags:
+      - Order
+    put:
+      consumes:
+      - application/json
+      description: Update the details of an existing order
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated order details
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.updateOrderReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Update an existing order
+      tags:
+      - Order
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
