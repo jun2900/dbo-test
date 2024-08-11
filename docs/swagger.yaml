@@ -28,6 +28,13 @@ definitions:
         format: date-time
         type: string
     type: object
+  controllers.createUserReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   controllers.errorResponse:
     properties:
       message:
@@ -94,6 +101,32 @@ info:
   title: DBO-TEST API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user with email and password
+      parameters:
+      - description: login req
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.loginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      summary: Logs in a user
+      tags:
+      - Auth
   /customer:
     get:
       consumes:
@@ -311,30 +344,27 @@ paths:
       summary: Update an existing customer
       tags:
       - customers
-  /login:
-    post:
+  /login-data:
+    get:
       consumes:
       - application/json
-      description: Logs in a user with email and password
-      parameters:
-      - description: login req
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.loginReq'
+      description: Get login data
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.successResponse'
-        "400":
-          description: Bad Request
+            items:
+              $ref: '#/definitions/controllers.successResponse'
+            type: array
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/controllers.errorResponse'
-      summary: Logs in a user
+      security:
+      - Bearer: []
+      summary: Get login data
       tags:
       - Auth
   /order:
@@ -557,6 +587,38 @@ paths:
       summary: Update an existing order
       tags:
       - Order
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided email and password
+      parameters:
+      - description: User details
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.createUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.successResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/controllers.errorResponse'
+      security:
+      - Bearer: []
+      summary: Create a new user
+      tags:
+      - Auth
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.

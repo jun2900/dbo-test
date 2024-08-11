@@ -18,6 +18,7 @@ import (
 var (
 	Q        = new(Query)
 	Customer *customer
+	LoginLog *loginLog
 	Order    *order
 	User     *user
 )
@@ -25,6 +26,7 @@ var (
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
 	Customer = &Q.Customer
+	LoginLog = &Q.LoginLog
 	Order = &Q.Order
 	User = &Q.User
 }
@@ -33,6 +35,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:       db,
 		Customer: newCustomer(db, opts...),
+		LoginLog: newLoginLog(db, opts...),
 		Order:    newOrder(db, opts...),
 		User:     newUser(db, opts...),
 	}
@@ -42,6 +45,7 @@ type Query struct {
 	db *gorm.DB
 
 	Customer customer
+	LoginLog loginLog
 	Order    order
 	User     user
 }
@@ -52,6 +56,7 @@ func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:       db,
 		Customer: q.Customer.clone(db),
+		LoginLog: q.LoginLog.clone(db),
 		Order:    q.Order.clone(db),
 		User:     q.User.clone(db),
 	}
@@ -69,6 +74,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:       db,
 		Customer: q.Customer.replaceDB(db),
+		LoginLog: q.LoginLog.replaceDB(db),
 		Order:    q.Order.replaceDB(db),
 		User:     q.User.replaceDB(db),
 	}
@@ -76,6 +82,7 @@ func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 
 type queryCtx struct {
 	Customer ICustomerDo
+	LoginLog ILoginLogDo
 	Order    IOrderDo
 	User     IUserDo
 }
@@ -83,6 +90,7 @@ type queryCtx struct {
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
 		Customer: q.Customer.WithContext(ctx),
+		LoginLog: q.LoginLog.WithContext(ctx),
 		Order:    q.Order.WithContext(ctx),
 		User:     q.User.WithContext(ctx),
 	}

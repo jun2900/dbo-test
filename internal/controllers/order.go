@@ -15,18 +15,18 @@ import (
 	"gorm.io/gorm"
 )
 
-// @Summary		Get Single Order
-// @Description	get single order by ID
-// @Tags			Order
-// @Accept			json
-// @Produce		json
-// @Param			id	path	int	true	"Order ID"
-// @Security		Bearer
-// @Success		200	{object}	model.Order
-// @Failure		400	{object}	errorResponse
-// @Failure		404	{object}	errorResponse
-// @Failure		500	{object}	errorResponse
-// @Router			/order/{id} [get]
+//	@Summary		Get Single Order
+//	@Description	get single order by ID
+//	@Tags			Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"Order ID"
+//	@Security		Bearer
+//	@Success		200	{object}	model.Order
+//	@Failure		400	{object}	errorResponse
+//	@Failure		404	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/order/{id} [get]
 func GetSingleOrder(c *gin.Context) {
 	orderID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -56,24 +56,24 @@ func GetSingleOrder(c *gin.Context) {
 }
 
 // GetMultipleOrder godoc
-// @Summary Get Multiple Order
-// @Description get multiple order with pagination and filtering options
-// @Tags Order
-// @Accept json
-// @Produce json
-// @Param page query int false "Page number" default(1)
-// @Param pagesize query int false "Number of items per page" default(10)
-// @Param order query string false "Order by field (asc or desc)" default("asc")
-// @Param dateFrom query string false "Filter by order date from" Format(date)
-// @Param dateTo query string false "Filter by order date to" Format(date)
-// @Param amountFrom query number false "Filter by order amount from" default(0)
-// @Param amountTo query number false "Filter by order amount to" default(0)
-// @Security Bearer
-// @Success 200 {object} PagedResults{data=[]model.Order}
-// @Failure 400 {object} errorResponse
-// @Failure 404 {object} errorResponse
-// @Failure 500 {object} errorResponse
-// @Router /order [get]
+//	@Summary		Get Multiple Order
+//	@Description	get multiple order with pagination and filtering options
+//	@Tags			Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			page		query	int		false	"Page number"					default(1)
+//	@Param			pagesize	query	int		false	"Number of items per page"		default(10)
+//	@Param			order		query	string	false	"Order by field (asc or desc)"	default("asc")
+//	@Param			dateFrom	query	string	false	"Filter by order date from"		Format(date)
+//	@Param			dateTo		query	string	false	"Filter by order date to"		Format(date)
+//	@Param			amountFrom	query	number	false	"Filter by order amount from"	default(0)
+//	@Param			amountTo	query	number	false	"Filter by order amount to"		default(0)
+//	@Security		Bearer
+//	@Success		200	{object}	PagedResults{data=[]model.Order}
+//	@Failure		400	{object}	errorResponse
+//	@Failure		404	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/order [get]
 func GetMultipleOrder(c *gin.Context) {
 	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
 	if err != nil {
@@ -252,18 +252,18 @@ type createOrderReq struct {
 }
 
 // CreateOrder godoc
-// @Summary		Create a new order
-// @Description	Create a new order with the provided details
-// @Tags			Order
-// @Accept			json
-// @Produce		json
-// @Param			order	body	createOrderReq	true	"Order details"
-// @Security		Bearer
-// @Success		200	{object}	successResponse
-// @Failure		400	{object}	errorResponse
-// @Failure		401	{object}	errorResponse
-// @Failure		500	{object}	errorResponse
-// @Router			/order [post]
+//	@Summary		Create a new order
+//	@Description	Create a new order with the provided details
+//	@Tags			Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			order	body	createOrderReq	true	"Order details"
+//	@Security		Bearer
+//	@Success		200	{object}	successResponse
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/order [post]
 func CreateOrder(c *gin.Context) {
 	var input createOrderReq
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -300,19 +300,19 @@ type updateOrderReq struct {
 
 // UpdateOrder godoc
 //
-// @Summary		Update an existing order
-// @Description	Update the details of an existing order
-// @Tags			Order
-// @Accept			json
-// @Produce		json
-// @Param			id			path	int					true	"Order ID"
-// @Param			order		body	updateOrderReq		true	"Updated order details"
-// @Security		Bearer
-// @Success		200	{object}	successResponse
-// @Failure		400	{object}	errorResponse
-// @Failure		401	{object}	errorResponse
-// @Failure		500	{object}	errorResponse
-// @Router			/order/{id} [put]
+//	@Summary		Update an existing order
+//	@Description	Update the details of an existing order
+//	@Tags			Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path	int				true	"Order ID"
+//	@Param			order	body	updateOrderReq	true	"Updated order details"
+//	@Security		Bearer
+//	@Success		200	{object}	successResponse
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/order/{id} [put]
 func UpdateOrder(c *gin.Context) {
 	var input updateOrderReq
 
@@ -360,19 +360,19 @@ func UpdateOrder(c *gin.Context) {
 }
 
 // DeleteOrder godoc
-// @Summary		Delete an order
-// @Description	Delete an order by ID
-// @Tags			Order
-// @Accept			json
-// @Produce		json
-// @Param			id	path	int	true	"Order ID"
-// @Security		Bearer
-// @Success		200	{object}	successResponse
-// @Failure		400	{object}	errorResponse
-// @Failure		401	{object}	errorResponse
-// @Failure		404	{object}	errorResponse
-// @Failure		500	{object}	errorResponse
-// @Router			/order/{id} [delete]
+//	@Summary		Delete an order
+//	@Description	Delete an order by ID
+//	@Tags			Order
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	int	true	"Order ID"
+//	@Security		Bearer
+//	@Success		200	{object}	successResponse
+//	@Failure		400	{object}	errorResponse
+//	@Failure		401	{object}	errorResponse
+//	@Failure		404	{object}	errorResponse
+//	@Failure		500	{object}	errorResponse
+//	@Router			/order/{id} [delete]
 func DeleteOrder(c *gin.Context) {
 	orderID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

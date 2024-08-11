@@ -20,7 +20,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/health", s.healthHandler)
 
 	//auth routes
-	r.POST("/login", controllers.LoginHandler)
+	authGroup := r.Group("/auth")
+	authGroup.POST("/login", controllers.LoginHandler)
 
 	r.Use(middlewares.JWTAuthMiddleware(os.Getenv("JWT_SECRET")))
 
@@ -32,12 +33,16 @@ func (s *Server) RegisterRoutes() http.Handler {
 	customerGroup.PUT("/:id", controllers.UpdateCustomer)
 	customerGroup.DELETE("/:id", controllers.DeleteCustomer)
 
+	//order routes
 	orderGroup := r.Group("/order")
 	orderGroup.POST("/", controllers.CreateOrder)
 	orderGroup.GET("/", controllers.GetMultipleOrder)
 	orderGroup.GET("/:id", controllers.GetSingleOrder)
 	orderGroup.PUT("/:id", controllers.UpdateOrder)
 	orderGroup.DELETE("/:id", controllers.DeleteOrder)
+
+	r.GET("/login-data", controllers.GetLoginData)
+	r.POST("/user", controllers.CreateUser)
 
 	return r
 }
