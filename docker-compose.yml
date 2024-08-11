@@ -1,6 +1,22 @@
-version: '3.8'
-
 services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - DB_ROOT=${DB_ROOT}
+
   mysql:
     image: mysql:latest
     environment:
