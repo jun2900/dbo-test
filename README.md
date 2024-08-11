@@ -6,7 +6,15 @@ Project for DBO Interview
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-If you want to setup locally change the .env.example file to .env
+### Environment Setup
+
+Before you start, rename the `.env.example` file to `.env` and update the environment variables as needed.
+
+### Swagger Documentation
+
+After running the application, you can access the Swagger documentation by navigating to the following URL in your browser (the port is in the .env file):
+[http://localhost:[your_port]/swagger/index.html](http://localhost:[your_port]/swagger/index.html)
+
 ## MakeFile
 
 run all make commands with clean tests
